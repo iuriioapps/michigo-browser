@@ -9,6 +9,11 @@ A desktop application for Japanese language learning, with a companion CLI.
 > package and release — plus one end-to-end "proof of life" slice that exercises
 > every seam. See [Proof of life](#proof-of-life).
 
+New to Electron, pnpm workspaces, or this toolchain? Start with
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — it explains how the pieces fit
+together and why, for someone who knows TypeScript and the web but not this
+stack.
+
 ## Prerequisites
 
 - **Node 24** — `nvm use` picks it up from `.nvmrc`. Pinned to match the Node
