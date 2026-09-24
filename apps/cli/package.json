@@ -1,0 +1,30 @@
+{
+  "name": "@michigo/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Michigo companion CLI",
+  "bin": {
+    "michigo": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@michigo/anki": "workspace:*",
+    "@michigo/core": "workspace:*",
+    "@michigo/vocab": "workspace:*",
+    "@types/node": "catalog:",
+    "commander": "^15.0.0",
+    "tsdown": "^0.23.0",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "zod": "catalog:"
+  }
+}

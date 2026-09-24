@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      # One PR per ecosystem cluster keeps review manageable.
+      dev-tooling:
+        patterns: ["oxlint*", "oxfmt", "turbo", "typescript", "vitest", "tsdown", "tsx"]
+      react:
+        patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

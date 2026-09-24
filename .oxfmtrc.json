@@ -1,0 +1,9 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/dist-electron/**",
+    "**/release/**",
+    "apps/desktop/src/components/ui/**"
+  ]
+}

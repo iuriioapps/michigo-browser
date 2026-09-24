@@ -1,0 +1,22 @@
+{
+  "name": "@michigo/vocab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vocabulary coverage analysis",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@michigo/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "zod": "catalog:"
+  }
+}
