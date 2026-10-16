@@ -2,7 +2,14 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { BrowserWindow, app, session, shell } from "electron";
+import {
+  BrowserWindow,
+  Menu,
+  type MenuItemConstructorOptions,
+  app,
+  session,
+  shell,
+} from "electron";
 
 import { registerIpc } from "./ipc";
 
@@ -19,6 +26,37 @@ function openExternally(url: string): void {
   if (URL.parse(url)?.protocol === "https:") {
     void shell.openExternal(url);
   }
+}
+
+// Replaces Electron's default menu, which ships Reload and DevTools in the
+// packaged app. The Edit menu stays: without it, copy and paste stop working
+// on macOS.
+function buildMenu(): Menu {
+  const devItems: MenuItemConstructorOptions[] = app.isPackaged
+    ? []
+    : [
+        { role: "reload" },
+        { role: "forceReload" },
+        { role: "toggleDevTools" },
+        { type: "separator" },
+      ];
+
+  return Menu.buildFromTemplate([
+    process.platform === "darwin" ? { role: "appMenu" } : { role: "fileMenu" },
+    { role: "editMenu" },
+    {
+      label: "View",
+      submenu: [
+        ...devItems,
+        { role: "resetZoom" },
+        { role: "zoomIn" },
+        { role: "zoomOut" },
+        { type: "separator" },
+        { role: "togglefullscreen" },
+      ],
+    },
+    { role: "windowMenu" },
+  ]);
 }
 
 function createWindow(): void {
@@ -38,6 +76,7 @@ function createWindow(): void {
       contextIsolation: true,
       sandbox: true,
       nodeIntegration: false,
+      devTools: !app.isPackaged,
     },
   });
 
@@ -67,6 +106,7 @@ void app.whenReady().then(() => {
     callback(false);
   });
   session.defaultSession.setPermissionCheckHandler(() => false);
+  Menu.setApplicationMenu(buildMenu());
   registerIpc(rendererUrl);
   createWindow();
 
