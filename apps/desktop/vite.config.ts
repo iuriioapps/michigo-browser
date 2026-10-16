@@ -3,8 +3,19 @@ import { URL, fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { type Plugin, defineConfig } from "vite";
 import electron from "vite-plugin-electron/simple";
+
+// The dev server needs an inline React Refresh preamble and a websocket for
+// HMR. Neither exists in the built app, so only `vite dev` loosens the CSP.
+const devCsp: Plugin = {
+  name: "michigo:dev-csp",
+  apply: "serve",
+  transformIndexHtml: (html) =>
+    html
+      .replace("script-src 'self'", "script-src 'self' 'unsafe-inline'")
+      .replace("connect-src 'self'", "connect-src 'self' ws:"),
+};
 
 export default defineConfig({
   // Production loads from file://, so asset paths must be relative.
@@ -24,6 +35,7 @@ export default defineConfig({
     }),
     react(),
     tailwindcss(),
+    devCsp,
     electron({
       main: { entry: "electron/main.ts" },
       preload: {
