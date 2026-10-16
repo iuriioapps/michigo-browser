@@ -1,0 +1,5 @@
+{
+  // Oxlint and Oxfmt replace ESLint and Prettier in this repo.
+  "recommendations": ["oxc.oxc-vscode"],
+  "unwantedRecommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+}
