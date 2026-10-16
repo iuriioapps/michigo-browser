@@ -15,6 +15,7 @@
     "check": "pnpm fmt:check && pnpm lint && pnpm typecheck && pnpm test"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "catalog:",
     "oxfmt": "^0.70.0",
     "oxlint": "^1.85.0",
     "oxlint-tsgolint": "^7.0.2002",

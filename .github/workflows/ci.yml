@@ -39,7 +39,7 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
       - name: Test
-        run: pnpm test
+        run: pnpm test --coverage
       - name: Build
         run: pnpm build
       # Catches broken files globs, a missing preload and fuse or ASAR
