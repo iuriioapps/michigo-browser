@@ -4,6 +4,7 @@ import { RouterProvider, createMemoryHistory, createRouter } from "@tanstack/rea
 import { render } from "@testing-library/react";
 
 import type { DesktopApi } from "../../shared/api";
+import { RouteError, RouteNotFound } from "../components/route-fallbacks";
 import { routeTree } from "../routeTree.gen";
 
 export const runtimeInfo: RuntimeInfo = {
@@ -71,6 +72,8 @@ export function renderRoute(path: string, api: DesktopApi = createApiStub()) {
   const router = createRouter({
     routeTree,
     history: createMemoryHistory({ initialEntries: [path] }),
+    defaultErrorComponent: RouteError,
+    defaultNotFoundComponent: RouteNotFound,
   });
 
   return render(
