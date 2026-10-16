@@ -42,3 +42,7 @@ jobs:
         run: pnpm test
       - name: Build
         run: pnpm build
+      # Catches broken files globs, a missing preload and fuse or ASAR
+      # problems on every PR instead of at release time.
+      - name: Package
+        run: pnpm --filter @michigo/desktop exec electron-builder --dir --publish never
