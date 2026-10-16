@@ -5,7 +5,37 @@ on:
     tags: ["v*"]
 
 jobs:
+  # Gate every platform build on the same checks CI runs, once.
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      # electron-builder names the release after package.json, not the tag,
+      # so a mismatch would publish the wrong version.
+      - name: Tag matches desktop version
+        run: |
+          version=$(node -p "require('./apps/desktop/package.json').version")
+          if [ "${GITHUB_REF_NAME#v}" != "$version" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match apps/desktop version $version"
+            exit 1
+          fi
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm check
+
   desktop:
+    needs: verify
     # Electron apps must be built on the OS they target.
     strategy:
       fail-fast: false
