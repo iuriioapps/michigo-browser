@@ -22,6 +22,3 @@ allowBuilds:
   electron-winstaller: true
   # esbuild (via tsx) installs its platform binary.
   esbuild: true
-
-minimumReleaseAgeExclude:
-  - vite@8.3.1
