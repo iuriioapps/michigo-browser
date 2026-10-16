@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
 
+# Read-only token: CI never writes to the repository.
+permissions:
+  contents: read
+
 # A new push to the same ref supersedes the run already in flight.
 concurrency:
   group: ci-${{ github.ref }}
