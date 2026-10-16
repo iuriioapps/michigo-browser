@@ -2,7 +2,7 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { BrowserWindow, app, shell } from "electron";
+import { BrowserWindow, app, session, shell } from "electron";
 
 import { registerIpc } from "./ipc";
 
@@ -61,6 +61,12 @@ function createWindow(): void {
 }
 
 void app.whenReady().then(() => {
+  // Electron grants every permission by default. Deny them all (camera,
+  // notifications, geolocation, ...) until a feature needs a specific one.
+  session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => {
+    callback(false);
+  });
+  session.defaultSession.setPermissionCheckHandler(() => false);
   registerIpc(rendererUrl);
   createWindow();
 
