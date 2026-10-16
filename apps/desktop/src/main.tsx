@@ -6,7 +6,11 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { router } from "./router";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  // Queries hit local IPC, not a network. A rejection is a deterministic
+  // handler error, so retrying only delays showing it.
+  defaultOptions: { queries: { retry: false } },
+});
 const container = document.getElementById("root");
 
 if (container === null) {
