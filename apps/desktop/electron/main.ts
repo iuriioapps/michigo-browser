@@ -2,12 +2,19 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-import { BrowserWindow, app } from "electron";
+import { BrowserWindow, app, shell } from "electron";
 
 import { registerIpc } from "./ipc";
 
 // import.meta.dirname is unavailable once bundled; derive it from the URL.
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
+
+// Only https links leave the app, and they go to the system browser.
+function openExternally(url: string): void {
+  if (URL.parse(url)?.protocol === "https:") {
+    void shell.openExternal(url);
+  }
+}
 
 function createWindow(): void {
   const window = new BrowserWindow({
@@ -27,6 +34,18 @@ function createWindow(): void {
       sandbox: true,
       nodeIntegration: false,
     },
+  });
+
+  // The app is a single page with hash routing, so it never navigates for
+  // real. A link in user content must not replace the app or open a window.
+  window.webContents.on("will-navigate", (event, url) => {
+    event.preventDefault();
+    openExternally(url);
+  });
+  window.webContents.setWindowOpenHandler(({ url }) => {
+    openExternally(url);
+
+    return { action: "deny" };
   });
 
   window.once("ready-to-show", () => {
