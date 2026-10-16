@@ -1,0 +1,21 @@
+appId: com.michigo.desktop
+productName: Michigo
+directories:
+  output: release/${version}
+files:
+  - dist/**
+  - dist-electron/**
+# Everything is bundled by Vite, so there are no runtime deps to rebuild.
+npmRebuild: false
+mac:
+  target: [dmg, zip]
+  category: public.app-category.education
+win:
+  target: nsis
+linux:
+  target: [AppImage, deb]
+  category: Education
+publish:
+  provider: github
+  owner: iuriioapps
+  repo: michigo-browser
