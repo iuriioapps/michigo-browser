@@ -99,27 +99,44 @@ function createWindow(): void {
   void window.loadURL(rendererUrl);
 }
 
-void app.whenReady().then(() => {
-  // Electron grants every permission by default. Deny them all (camera,
-  // notifications, geolocation, ...) until a feature needs a specific one.
-  session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => {
-    callback(false);
-  });
-  session.defaultSession.setPermissionCheckHandler(() => false);
-  Menu.setApplicationMenu(buildMenu());
-  registerIpc(rendererUrl);
-  createWindow();
+// A second launch would run with its own in-memory state. Focus the running
+// instance instead.
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+} else {
+  app.on("second-instance", () => {
+    const [window] = BrowserWindow.getAllWindows();
 
-  app.on("activate", () => {
-    // macOS keeps the app running with no windows; recreate on dock click.
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+    if (window !== undefined) {
+      if (window.isMinimized()) {
+        window.restore();
+      }
+      window.focus();
     }
   });
-});
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
+  void app.whenReady().then(() => {
+    // Electron grants every permission by default. Deny them all (camera,
+    // notifications, geolocation, ...) until a feature needs a specific one.
+    session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => {
+      callback(false);
+    });
+    session.defaultSession.setPermissionCheckHandler(() => false);
+    Menu.setApplicationMenu(buildMenu());
+    registerIpc(rendererUrl);
+    createWindow();
+
+    app.on("activate", () => {
+      // macOS keeps the app running with no windows; recreate on dock click.
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+      }
+    });
+  });
+
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+      app.quit();
+    }
+  });
+}
