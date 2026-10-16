@@ -31,18 +31,20 @@ Vite and tsdown bundle `devDependencies` and leave `dependencies` external. Cons
 
 ## Validate at the IPC boundary
 
-Treat everything arriving from the renderer as untrusted, exactly as a server treats an HTTP body. Parse it with a zod schema from `@michigo/core` inside the `ipcMain.handle` callback before use. The renderer is a locked-down browser tab; a compromised page or dependency must not be able to drive the main process.
+Treat everything arriving from the renderer as untrusted, exactly as a server treats an HTTP body. Parse it with a zod schema from `@michigo/core` inside the handler before use. The renderer is a locked-down browser tab; a compromised page or dependency must not be able to drive the main process.
 
 `project:create` in `apps/desktop/electron/ipc.ts` is the reference implementation: it parses with `CreateProjectInputSchema` before touching the argument. Copy it. A parse failure throws, Electron rejects the renderer's promise, and TanStack Query surfaces it as a mutation error; no extra plumbing.
 
 `app:info` takes no arguments, so it has nothing to parse.
+
+Register handlers through the local `handle()` in `registerIpc`, never `ipcMain.handle` directly. `handle()` rejects calls from any frame other than the app's own page.
 
 ## Adding an IPC channel
 
 Touch these four places, in order:
 
 1. `apps/desktop/shared/api.ts`: add the method to `DesktopApi` and its name to `channels`. This is where you decide what the feature looks like.
-2. `apps/desktop/electron/ipc.ts`: `ipcMain.handle`, parsing any input.
+2. `apps/desktop/electron/ipc.ts`: `handle()`, parsing any input.
 3. `apps/desktop/electron/preload.ts`: expose the function. Forgetting this is a compile error, because the object is typed as `DesktopApi`.
 4. `apps/desktop/src/lib/queries.ts`: a query or mutation, then use it.
 

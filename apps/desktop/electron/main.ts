@@ -1,6 +1,6 @@
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { BrowserWindow, app, shell } from "electron";
 
@@ -8,6 +8,11 @@ import { registerIpc } from "./ipc";
 
 // import.meta.dirname is unavailable once bundled; derive it from the URL.
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
+
+// Production loads over file://, hence `base: "./"` in vite.config.ts.
+const rendererUrl =
+  process.env["VITE_DEV_SERVER_URL"] ??
+  pathToFileURL(path.join(moduleDir, "../dist/index.html")).href;
 
 // Only https links leave the app, and they go to the system browser.
 function openExternally(url: string): void {
@@ -52,18 +57,11 @@ function createWindow(): void {
     window.show();
   });
 
-  const devServerUrl = process.env["VITE_DEV_SERVER_URL"];
-
-  if (devServerUrl === undefined) {
-    // Production loads over file://, hence `base: "./"` in vite.config.ts.
-    void window.loadFile(path.join(moduleDir, "../dist/index.html"));
-  } else {
-    void window.loadURL(devServerUrl);
-  }
+  void window.loadURL(rendererUrl);
 }
 
 void app.whenReady().then(() => {
-  registerIpc();
+  registerIpc(rendererUrl);
   createWindow();
 
   app.on("activate", () => {
