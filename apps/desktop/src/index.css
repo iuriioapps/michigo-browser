@@ -6,7 +6,8 @@
 
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: "Geist Variable", sans-serif;
+  /* Geist has no CJK glyphs; name the fallbacks so every OS picks a proper Japanese face. */
+  --font-sans: "Geist Variable", "Hiragino Sans", "Yu Gothic UI", "Noto Sans CJK JP", sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
