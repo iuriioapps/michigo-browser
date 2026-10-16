@@ -1,3 +1,4 @@
+import { PROJECT_NAME_MAX_LENGTH } from "@michigo/core/schemas";
 import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ function NewProjectDialog({ open, onClose }: NewProjectDialogProps) {
           </label>
           <Input
             id="project-name"
+            maxLength={PROJECT_NAME_MAX_LENGTH}
             value={name}
             onChange={(event) => {
               setName(event.target.value);
