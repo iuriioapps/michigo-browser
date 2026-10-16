@@ -30,3 +30,22 @@ export const RuntimeInfoSchema = z.object({
   modules: z.array(ModuleInfoSchema),
 });
 export type RuntimeInfo = z.infer<typeof RuntimeInfoSchema>;
+
+/**
+ * A project: one set of texts the user wants to understand.
+ *
+ * `id` and `createdAt` are the main process's to assign, which is why creating
+ * one takes a separate, narrower input type rather than a partial `Project`.
+ */
+export const ProjectSchema = z.object({
+  id: z.uuid(),
+  name: z.string().min(1).max(200),
+  createdAt: z.iso.datetime(),
+});
+export type Project = z.infer<typeof ProjectSchema>;
+
+/** The only shape the renderer is allowed to send on `project:create`. */
+export const CreateProjectInputSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+});
+export type CreateProjectInput = z.infer<typeof CreateProjectInputSchema>;

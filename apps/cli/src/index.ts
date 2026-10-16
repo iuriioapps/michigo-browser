@@ -1,28 +1,33 @@
 #!/usr/bin/env node
-import { ankiModule } from "@michigo/anki";
-import { describeRuntime } from "@michigo/core";
-import { vocabModule } from "@michigo/vocab";
-import { Command } from "commander";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-import { formatRuntimeInfo } from "./format";
+import { execute } from "@oclif/core";
+
+import Info from "./commands/info";
 import { APP_NAME, VERSION } from "./version";
 
-const program = new Command(APP_NAME).description("Michigo companion CLI").version(VERSION);
+/** Read by oclif's "explicit" discovery, which imports this very file. */
+export const COMMANDS = { info: Info };
 
-program
-  .command("info")
-  .description("Show runtime details and the domain modules loaded")
-  .option("--json", "print raw JSON instead of a table")
-  .action((options: { json?: boolean }) => {
-    // Same call the Electron main process makes — if these two ever disagree,
-    // the shared package boundary has been broken.
-    const info = describeRuntime({
-      app: APP_NAME,
+const self = fileURLToPath(import.meta.url);
+
+// No top-level `await`: oclif imports this module to read COMMANDS, and
+// awaiting here would deadlock that self-import. `execute` handles its own errors.
+// The config is inline rather than in package.json so `target` points at
+// whichever file is running: src/index.ts under tsx, dist/index.js once bundled.
+void execute({
+  loadOptions: {
+    root: dirname(self),
+    isRoot: true,
+    pjson: {
+      name: APP_NAME,
       version: VERSION,
-      modules: [vocabModule, ankiModule],
-    });
-
-    console.log(options.json === true ? JSON.stringify(info, null, 2) : formatRuntimeInfo(info));
-  });
-
-await program.parseAsync();
+      type: "module",
+      oclif: {
+        bin: APP_NAME,
+        commands: { strategy: "explicit", target: self, identifier: "COMMANDS" },
+      },
+    },
+  },
+});

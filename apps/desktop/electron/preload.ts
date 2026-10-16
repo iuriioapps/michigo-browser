@@ -13,6 +13,10 @@ const api: DesktopApi = {
   app: {
     info: () => ipcRenderer.invoke(channels.appInfo),
   },
+  projects: {
+    list: () => ipcRenderer.invoke(channels.projectList),
+    create: (input) => ipcRenderer.invoke(channels.projectCreate, input),
+  },
 };
 
 contextBridge.exposeInMainWorld("michigo", api);

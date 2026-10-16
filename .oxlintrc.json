@@ -17,12 +17,6 @@
   },
   "overrides": [
     {
-      "files": ["apps/cli/**"],
-      "rules": {
-        "no-console": "off"
-      }
-    },
-    {
       "files": ["apps/desktop/**"],
       "rules": {
         "import/no-unassigned-import": "off"
@@ -33,6 +27,6 @@
     "**/dist/**",
     "**/dist-electron/**",
     "**/release/**",
-    "apps/desktop/src/components/ui/**"
+    "apps/desktop/src/routeTree.gen.ts"
   ]
 }

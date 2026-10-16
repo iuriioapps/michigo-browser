@@ -15,6 +15,10 @@ function createWindow(): void {
     height: 750,
     // Avoids a flash of empty chrome before the renderer paints.
     show: false,
+    // The design puts the traffic lights inside the sidebar, so macOS loses its
+    // title bar and the sidebar supplies its own drag strip. Other platforms
+    // keep their normal frame until there is a design for them.
+    ...(process.platform === "darwin" ? { titleBarStyle: "hiddenInset" as const } : {}),
     webPreferences: {
       preload: path.join(moduleDir, "preload.cjs"),
       // Electron's security baseline: the renderer is a locked-down browser

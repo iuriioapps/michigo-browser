@@ -9,4 +9,6 @@ export default defineConfig({
   // platform:"node" would otherwise force .mjs; the package is already
   // "type": "module", so plain .js is unambiguous and matches `bin`.
   fixedExtension: false,
+  // oclif lazy-imports a helper; keep it inline so the CLI stays one file.
+  outputOptions: { codeSplitting: false },
 });

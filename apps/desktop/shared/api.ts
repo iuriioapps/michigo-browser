@@ -1,4 +1,4 @@
-import type { RuntimeInfo } from "@michigo/core/schemas";
+import type { CreateProjectInput, Project, RuntimeInfo } from "@michigo/core/schemas";
 
 /**
  * The IPC contract — the single source of truth shared by all three processes.
@@ -16,10 +16,21 @@ export interface DesktopApi {
     /** Runtime details plus the domain modules the main process has loaded. */
     info(): Promise<RuntimeInfo>;
   };
+  readonly projects: {
+    /** Every project the main process is holding, oldest first. */
+    list(): Promise<Project[]>;
+    /**
+     * Appends a project and returns it, with the id and timestamp main
+     * assigned. Rejects if `input` fails validation in the handler.
+     */
+    create(input: CreateProjectInput): Promise<Project>;
+  };
 }
 
 export const channels = {
   appInfo: "app:info",
+  projectList: "project:list",
+  projectCreate: "project:create",
 } as const;
 
 export type Channel = (typeof channels)[keyof typeof channels];

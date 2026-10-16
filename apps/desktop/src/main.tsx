@@ -1,9 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import { App } from "./App";
 import "./index.css";
+import { router } from "./router";
 
 const queryClient = new QueryClient();
 const container = document.getElementById("root");
@@ -14,8 +15,9 @@ if (container === null) {
 
 createRoot(container).render(
   <StrictMode>
+    {/* Query sits outside the router: routes come and go, the cache does not. */}
     <QueryClientProvider client={queryClient}>
-      <App />
+      <RouterProvider router={router} />
     </QueryClientProvider>
   </StrictMode>,
 );

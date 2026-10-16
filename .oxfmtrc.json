@@ -1,9 +1,10 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "proseWrap": "never",
   "ignorePatterns": [
     "**/dist/**",
     "**/dist-electron/**",
     "**/release/**",
-    "apps/desktop/src/components/ui/**"
+    "apps/desktop/src/routeTree.gen.ts"
   ]
 }
