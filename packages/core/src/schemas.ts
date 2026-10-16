@@ -37,15 +37,18 @@ export type RuntimeInfo = z.infer<typeof RuntimeInfoSchema>;
  * `id` and `createdAt` are the main process's to assign, which is why creating
  * one takes a separate, narrower input type rather than a partial `Project`.
  */
+/** Shared with the renderer's input, so the field cannot accept more than main does. */
+export const PROJECT_NAME_MAX_LENGTH = 200;
+
 export const ProjectSchema = z.object({
   id: z.uuid(),
-  name: z.string().min(1).max(200),
+  name: z.string().min(1).max(PROJECT_NAME_MAX_LENGTH),
   createdAt: z.iso.datetime(),
 });
 export type Project = z.infer<typeof ProjectSchema>;
 
 /** The only shape the renderer is allowed to send on `project:create`. */
 export const CreateProjectInputSchema = z.object({
-  name: z.string().trim().min(1).max(200),
+  name: z.string().trim().min(1).max(PROJECT_NAME_MAX_LENGTH),
 });
 export type CreateProjectInput = z.infer<typeof CreateProjectInputSchema>;
