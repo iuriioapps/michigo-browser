@@ -7,6 +7,14 @@ files:
   - dist-electron/**
 # Everything is bundled by Vite, so there are no runtime deps to rebuild.
 npmRebuild: false
+# Turn off Node-style entry points into the packaged binary and make it load
+# only the integrity-checked app.asar.
+electronFuses:
+  runAsNode: false
+  enableNodeOptionsEnvironmentVariable: false
+  enableNodeCliInspectArguments: false
+  enableEmbeddedAsarIntegrityValidation: true
+  onlyLoadAppFromAsar: true
 mac:
   target: [dmg, zip]
   category: public.app-category.education
