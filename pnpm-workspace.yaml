@@ -10,6 +10,8 @@ catalog:
   # NOT npm's latest (26.x). The shared packages run inside Electron main.
   "@types/node": ^24.0.0
   vitest: ^5.0.1
+  # Peer-depends on the exact vitest version; Dependabot bumps both together.
+  "@vitest/coverage-v8": 5.0.1
   zod: ^4.6.5
 
 # pnpm blocks install scripts by default; Electron's postinstall downloads its binary.
