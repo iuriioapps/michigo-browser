@@ -10,6 +10,12 @@ updates:
         patterns: ["oxlint*", "oxfmt", "turbo", "typescript", "vitest", "tsdown", "tsx"]
       react:
         patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
+    ignore:
+      # An Electron major changes the bundled Node, so .nvmrc and @types/node
+      # must move with it (see "Node version pinning" in CLAUDE.md). Bump it
+      # by hand as a deliberate decision.
+      - dependency-name: electron
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
